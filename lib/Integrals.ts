@@ -13,8 +13,8 @@ export function leftRectIntegral(params: IntegralParams) {
   const h = (limitB - limitA) / nSplits;
   let sum = 0;
 
-  for (let x = limitA; x <= limitB - h; x += h) {
-    sum += fn(x);
+  for (let x = limitA; x <= limitB; x += h) {
+    sum += Math.abs(fn(x));
   }
 
   return sum * h;
@@ -25,8 +25,8 @@ export function rightRectIntegral(params: IntegralParams) {
   const h = (limitB - limitA) / nSplits;
   let sum = 0;
 
-  for (let x = limitA + h; x <= limitB; x += h) {
-    sum += fn(x);
+  for (let x = limitA + h; x <= limitB + h; x += h) {
+    sum += Math.abs(fn(x));
   }
 
   return sum * h;
@@ -37,8 +37,8 @@ export function trapezoidal(params: IntegralParams) {
   const h = (limitB - limitA) / nSplits;
   let sum = (fn(limitA) + fn(limitB)) / 2;
 
-  for (let x = limitA + h; x <= limitB - h; x += h) {
-    sum += fn(x);
+  for (let x = limitA + h; x <= limitB; x += h) {
+    sum += Math.abs(fn(x));
   }
 
   return sum * h;
@@ -49,12 +49,12 @@ export function simpson(params: IntegralParams) {
   const h = (limitB - limitA) / nSplits;
   let sum1 = 0;
   let sum2 = 0;
-  for (let x = limitA + h; x <= limitB - h; x += 2 * h) {
-    sum1 += 4 * fn(x);
+  for (let x = limitA + h; x <= limitB; x += 2 * h) {
+    sum1 += 4 * Math.abs(fn(x));
   }
 
-  for (let x = limitA + 2 * h; x <= limitB - 2 * h; x += 2 * h) {
-    sum2 += 2 * fn(x);
+  for (let x = limitA + 2 * h; x <= limitB - h; x += 2 * h) {
+    sum2 += 2 * Math.abs(fn(x));
   }
 
   return (h / 3) * (fn(limitA) + fn(limitB) + sum1 + sum2);
@@ -73,7 +73,7 @@ export function leftRectIntegralVariable(params: IntegralParams) {
     let x = limitA;
 
     for (x = limitA; x <= limitB - h; x += h) {
-      sum += fn(x);
+      sum += Math.abs(fn(x));
     }
 
     I2N = h * sum;
@@ -97,7 +97,7 @@ export function rightRectIntegralVariable(params: IntegralParams) {
     let sum = 0;
 
     for (let x = limitA + h; x <= limitB; x += h) {
-      sum += fn(x);
+      sum += Math.abs(fn(x));
     }
 
     I2N = h * sum;
@@ -107,6 +107,28 @@ export function rightRectIntegralVariable(params: IntegralParams) {
   }
 
   return I2N;
+}
+
+export function MultipleIntegral(params: IntegralParams) {
+  const { limitA, limitB, limitC, limitD, nSplitsX,nSplitsY, fn } = params;
+
+  let IY = 0;
+  let SumX = 0;
+  let HX = (limitB - limitA) / nSplitsX;
+  let HY = (limitC - limitD) / nSplitsY;
+
+  for (let x = limitA; x<=limitB; x+=HX)
+  {
+    let SumY = 0;
+    for (let y = limitC; y<=limitD;y+=HY)
+    {
+      SumY += Math.abs(fn(x,y)); 
+    }
+    IY = SumY*HY;
+    SumX +=IY;
+  }
+
+  return SumX*HX;
 }
 
 function getIntegralValue(
